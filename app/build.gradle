@@ -51,6 +51,12 @@ dependencies {
     implementation "com.mikepenz:fastadapter-extensions-binding:$fastAdapterVersion"
     implementation "com.mikepenz:fastadapter-extensions-utils:$fastAdapterVersion"
 
+    implementation "com.google.dagger:dagger:$daggerVersion"
+    implementation "com.google.dagger:dagger-android-support:$daggerVersion"
+    kapt "com.google.dagger:dagger-compiler:$daggerVersion"
+    kapt "com.google.dagger:dagger-android-processor:$daggerVersion"
+
+
     implementation "com.squareup.retrofit2:retrofit:$retrofitVersion"
     implementation "com.squareup.retrofit2:converter-gson:$retrofitVersion"
     implementation "com.squareup.okhttp3:logging-interceptor:4.9.0"

@@ -1,5 +1,6 @@
 package com.mohamadk.albums
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -15,6 +16,7 @@ import com.mikepenz.fastadapter.items.ModelAbstractItem
 import com.mikepenz.fastadapter.ui.items.ProgressItem
 import com.mohamadk.albums.adapter.AlbumsItemFactory
 import com.mohamadk.albums.adapter.AlbumsModelWrapper
+import com.mohamadk.albums.app.di.AlbumsApp
 import com.mohamadk.albums.databinding.FragmentAlbumsBinding
 
 class AlbumsFragment : Fragment(R.layout.fragment_albums) {
@@ -34,6 +36,11 @@ class AlbumsFragment : Fragment(R.layout.fragment_albums) {
 
     private var _binding: FragmentAlbumsBinding? = null
     private val binding get() = _binding!!
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        AlbumsApp.inject(this)
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,

@@ -6,7 +6,7 @@ import com.mikepenz.fastadapter.items.ModelAbstractItem
 import com.mohamadk.albums.R
 import com.mohamadk.albums.adapter.AlbumsListingItemTypes
 import com.mohamadk.albums.adapter.AlbumsModelWrapper
-import kotlinx.android.synthetic.main.item_album.view.*
+import com.mohamadk.albums.databinding.ItemAlbumBinding
 
 class SingleTitleItem(wrapper: AlbumsModelWrapper<*>) :
     ModelAbstractItem<AlbumsModelWrapper<*>, RecyclerView.ViewHolder>(wrapper) {
@@ -21,9 +21,10 @@ class SingleTitleItem(wrapper: AlbumsModelWrapper<*>) :
 
     override fun bindView(holder: RecyclerView.ViewHolder, payloads: List<Any>) {
         super.bindView(holder, payloads)
-        holder.itemView.titleTextView.text = itemAlbumsModel.title
-
+        (holder as ViewHolder).binding.titleTextView.text = itemAlbumsModel.title
     }
 
-    class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
+    class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        val binding = ItemAlbumBinding.bind(itemView)
+    }
 }
