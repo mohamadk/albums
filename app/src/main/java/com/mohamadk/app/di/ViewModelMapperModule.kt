@@ -1,4 +1,4 @@
-package com.mohamadk.albums.app.di
+package com.mohamadk.app.di
 
 import androidx.lifecycle.ViewModel
 import com.mohamadk.albums.AlbumsFragmentViewModel

@@ -1,7 +1,7 @@
-package com.mohamadk.albums.app
+package com.mohamadk.app
 
 import android.app.Application
-import com.mohamadk.albums.app.di.AlbumsApp
+import com.mohamadk.app.di.AlbumsApp
 
 class App : Application() {
 

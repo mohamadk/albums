@@ -1,6 +1,6 @@
-package com.mohamadk.albums.app.di
+package com.mohamadk.app.di
 
-import com.mohamadk.albums.app.App
+import com.mohamadk.app.App
 import dagger.BindsInstance
 import dagger.Component
 import dagger.android.AndroidInjectionModule

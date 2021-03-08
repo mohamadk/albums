@@ -5,7 +5,10 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.mikepenz.fastadapter.FastAdapter
@@ -16,8 +19,11 @@ import com.mikepenz.fastadapter.items.ModelAbstractItem
 import com.mikepenz.fastadapter.ui.items.ProgressItem
 import com.mohamadk.albums.adapter.AlbumsItemFactory
 import com.mohamadk.albums.adapter.AlbumsModelWrapper
-import com.mohamadk.albums.app.di.AlbumsApp
 import com.mohamadk.albums.databinding.FragmentAlbumsBinding
+import com.mohamadk.app.di.AlbumsApp
+import com.mohamadk.app.di.ViewModelFactory
+import kotlinx.coroutines.flow.collect
+import javax.inject.Inject
 
 class AlbumsFragment : Fragment(R.layout.fragment_albums) {
 
@@ -37,6 +43,12 @@ class AlbumsFragment : Fragment(R.layout.fragment_albums) {
     private var _binding: FragmentAlbumsBinding? = null
     private val binding get() = _binding!!
 
+    @Inject
+    lateinit var viewModelFactory: ViewModelFactory
+    private val viewModel by lazy(LazyThreadSafetyMode.NONE) {
+        ViewModelProvider(this,viewModelFactory)[AlbumsFragmentViewModel::class.java]
+    }
+
     override fun onAttach(context: Context) {
         super.onAttach(context)
         AlbumsApp.inject(this)
@@ -49,7 +61,24 @@ class AlbumsFragment : Fragment(R.layout.fragment_albums) {
     ): View? {
         _binding = FragmentAlbumsBinding.inflate(inflater, container, false)
 
+        lifecycleScope.launchWhenStarted {
+            viewModel.viewStateFlow.collect{
+                submitResult(it)
+            }
+        }
+        viewModel.viewCreated()
+
         return binding.root
+    }
+
+    private fun submitResult(viewState: ViewState) {
+        with(binding) {
+            loading.isVisible = viewState.showLoading
+            (errorView as View).isVisible = viewState.showError
+            viewState.items?.let { items ->
+                itemAdapter.set(items)
+            }
+        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
