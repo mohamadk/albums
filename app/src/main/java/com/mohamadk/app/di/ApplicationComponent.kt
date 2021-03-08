@@ -1,5 +1,6 @@
 package com.mohamadk.app.di
 
+import com.mohamadk.albums.di.LoadAlbumsModule
 import com.mohamadk.app.App
 import dagger.BindsInstance
 import dagger.Component
@@ -12,7 +13,8 @@ import javax.inject.Singleton
     modules = [
         AndroidInjectionModule::class,
         ViewModelMapperModule::class,
-        ViewBuilderModule::class
+        ViewBuilderModule::class,
+        LoadAlbumsModule::class
     ]
 )
 interface ApplicationComponent {

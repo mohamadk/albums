@@ -5,42 +5,36 @@ import androidx.lifecycle.viewModelScope
 import com.mohamadk.albums.adapter.AlbumsModelWrapper
 import com.mohamadk.albums.usecases.ItemAlbumModelToAlbumsModelWrapper
 import com.mohamadk.albums.usecases.LoadAlbumsUseCase
-import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class AlbumsFragmentViewModel @Inject constructor(
+    private val ioDispatcher: CoroutineDispatcher,
     private val loadAlbumsUseCase: LoadAlbumsUseCase,
     private val itemAlbumModelToAlbumsModelWrapper: ItemAlbumModelToAlbumsModelWrapper
 ) : ViewModel() {
 
-    private val _viewStateFlow = MutableStateFlow(
-        ViewState(
-            true
-        )
-    )
+    private val _viewStateFlow = MutableStateFlow(ViewState(true))
     val viewStateFlow: StateFlow<ViewState> = _viewStateFlow
 
     fun viewCreated() {
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch(ioDispatcher) {
             loadAlbums()
         }
     }
 
     private fun loadAlbums() {
         try {
-            _viewStateFlow.value =
-                ViewState(showLoading = true)
+            _viewStateFlow.value = ViewState(showLoading = true)
             val albums = loadAlbumsUseCase.run(Unit)
-            _viewStateFlow.value =
-                ViewState(items = albums.items.map {
-                    itemAlbumModelToAlbumsModelWrapper.map(it)
-                })
+            _viewStateFlow.value = ViewState(items = albums.items.map {
+                itemAlbumModelToAlbumsModelWrapper.map(it)
+            })
         } catch (e: Exception) {
-            _viewStateFlow.value =
-                ViewState(showError = true)
+            _viewStateFlow.value = ViewState(showError = true)
         }
     }
 }
