@@ -20,8 +20,8 @@ import com.mikepenz.fastadapter.ui.items.ProgressItem
 import com.mohamadk.albums.adapter.AlbumsItemFactory
 import com.mohamadk.albums.adapter.AlbumsModelWrapper
 import com.mohamadk.albums.databinding.FragmentAlbumsBinding
+import com.mohamadk.app.ViewModelFactory
 import com.mohamadk.app.di.AlbumsApp
-import com.mohamadk.app.di.ViewModelFactory
 import kotlinx.coroutines.flow.collect
 import javax.inject.Inject
 
@@ -66,6 +66,12 @@ class AlbumsFragment : Fragment(R.layout.fragment_albums) {
                 submitResult(it)
             }
         }
+        _binding?.let {
+            it.errorView.retry.setOnClickListener {
+                viewModel.retry()
+            }
+        }
+
         viewModel.viewCreated()
 
         return binding.root

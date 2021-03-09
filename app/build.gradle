@@ -64,6 +64,10 @@ dependencies {
     implementation "com.squareup.retrofit2:converter-gson:$retrofitVersion"
     implementation "com.squareup.okhttp3:logging-interceptor:4.9.0"
 
+    implementation "androidx.room:room-runtime:$roomVersion"
+    kapt "androidx.room:room-compiler:$roomVersion"
+    implementation "androidx.room:room-ktx:$roomVersion"
+
     testImplementation("org.junit.jupiter:junit-jupiter-api:$junit5")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:$junit5")
     testImplementation 'org.mockito:mockito-inline:3.7.7'

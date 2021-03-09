@@ -14,7 +14,7 @@ buildscript {
     }
 }
 
-ext{
+ext {
     fastAdapterVersion = "5.2.1"
     daggerVersion = "2.28.1"
     androidxLifecycleVersion = "2.2.0"
@@ -23,6 +23,7 @@ ext{
     coroutineVersion = "1.4.2"
     lifecycle_version = "2.3.0"
     junit5 = "5.7.1"
+    roomVersion = "2.2.6"
 }
 
 allprojects {

@@ -1,13 +1,15 @@
 package com.mohamadk.albums
 
-import com.mohamadk.albums.usecases.AlbumsResponse
-import com.mohamadk.albums.usecases.ItemAlbumModelToAlbumsModelWrapper
+import com.mohamadk.albums.mappers.ItemAlbumModelToAlbumsModelWrapper
+import com.mohamadk.albums.mappers.ItemAlbumModelToItemAlbumUiModel
 import com.mohamadk.albums.usecases.LoadAlbumsUseCase
+import com.mohamadk.albums.usecases.repository.db.ItemAlbumModel
 import com.nhaarman.mockitokotlin2.any
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.whenever
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.TestCoroutineDispatcher
@@ -17,26 +19,31 @@ import org.junit.jupiter.api.Assertions.assertEquals
 class AlbumsFragmentViewModelRobo @ExperimentalCoroutinesApi constructor(
     testCoroutineScope: TestCoroutineScope,
     testCoroutineDispatcher: TestCoroutineDispatcher,
-    vararg albumsResponse: AlbumsResponse
+    vararg albumsResponseFlow: MutableStateFlow<List<ItemAlbumModel>>
 ) {
 
     private val viewModel: AlbumsFragmentViewModel
     private val loadAlbumsUseCase: LoadAlbumsUseCase = mock()
     private val error = IllegalStateException("something went wrong :O")
+
     /**
-     * didn't mock mapper since mock will do the same job as implementation itself
+     * didn't mock mappers since mock will do the same job as implementation itself
      */
-    private val itemAlbumModelToAlbumsModelWrapper = ItemAlbumModelToAlbumsModelWrapper()
+    private val itemAlbumModelToAlbumsModelWrapper =
+        ItemAlbumModelToAlbumsModelWrapper()
+    private val itemAlbumModelToItemAlbumUiModel =
+        ItemAlbumModelToItemAlbumUiModel()
     private val viewStates = mutableListOf<ViewState>()
     private val viewStateJob: Job
 
     init {
-        mockLoadAlbumsUseCase(albumsResponse)
+        mockLoadAlbumsUseCase(albumsResponseFlow)
 
         viewModel = AlbumsFragmentViewModel(
             testCoroutineDispatcher,
             loadAlbumsUseCase,
-            itemAlbumModelToAlbumsModelWrapper
+            itemAlbumModelToAlbumsModelWrapper,
+            itemAlbumModelToItemAlbumUiModel
         )
 
         viewStateJob = testCoroutineScope.launch {
@@ -46,18 +53,19 @@ class AlbumsFragmentViewModelRobo @ExperimentalCoroutinesApi constructor(
         }
     }
 
-    private fun mockLoadAlbumsUseCase(albumsResponse: Array<out AlbumsResponse>) {
+
+    private fun mockLoadAlbumsUseCase(albumsResponseFlow: Array<out MutableStateFlow<List<ItemAlbumModel>>>) {
         when {
-            albumsResponse.isEmpty() -> {
+            albumsResponseFlow.isEmpty() -> {
                 whenever(loadAlbumsUseCase.run(any())).thenThrow(error)
             }
-            albumsResponse.size == 1 -> {
-                whenever(loadAlbumsUseCase.run(any())).thenReturn(albumsResponse[0])
+            albumsResponseFlow.size == 1 -> {
+                whenever(loadAlbumsUseCase.run(any())).thenReturn(albumsResponseFlow[0])
             }
-            albumsResponse.size > 1 -> {
+            albumsResponseFlow.size > 1 -> {
                 whenever(loadAlbumsUseCase.run(any())).thenReturn(
-                    albumsResponse[0],
-                    *albumsResponse.sliceArray(1 until albumsResponse.size)
+                    albumsResponseFlow[0],
+                    *albumsResponseFlow.sliceArray(1 until albumsResponseFlow.size)
                 )
             }
         }
@@ -69,9 +77,15 @@ class AlbumsFragmentViewModelRobo @ExperimentalCoroutinesApi constructor(
         return this
     }
 
-    fun verify(vararg viewState: ViewState): AlbumsFragmentViewModelRobo {
+    fun verifyViewStates(vararg viewState: ViewState): AlbumsFragmentViewModelRobo {
         assertEquals(viewState.toList(), viewStates)
         viewStateJob.cancel()
+
+        return this
+    }
+
+    fun retry(): AlbumsFragmentViewModelRobo {
+        viewModel.retry()
 
         return this
     }

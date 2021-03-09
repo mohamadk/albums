@@ -13,7 +13,7 @@ class SingleTitleItem(wrapper: AlbumsModelWrapper<*>) :
     override val layoutRes: Int = R.layout.item_album
     override val type: Int = AlbumsListingItemTypes.SingleTitleItemType.value
 
-    private val itemAlbumsModel = wrapper.model as ItemAlbumModel
+    private val itemAlbumsModel = wrapper.model as ItemAlbumUiModel
 
     override fun getViewHolder(v: View): RecyclerView.ViewHolder {
         return ViewHolder(v)

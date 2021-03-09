@@ -14,7 +14,8 @@ import javax.inject.Singleton
         AndroidInjectionModule::class,
         ViewModelMapperModule::class,
         ViewBuilderModule::class,
-        LoadAlbumsModule::class
+        LoadAlbumsModule::class,
+        AppDiModule::class
     ]
 )
 interface ApplicationComponent {

@@ -1,4 +1,4 @@
-package com.mohamadk.app.di
+package com.mohamadk.app
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
