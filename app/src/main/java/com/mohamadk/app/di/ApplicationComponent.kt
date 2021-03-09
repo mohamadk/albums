@@ -1,6 +1,7 @@
 package com.mohamadk.app.di
 
 import com.mohamadk.albums.di.LoadAlbumsModule
+import com.mohamadk.albums.di.NetworkModule
 import com.mohamadk.app.App
 import dagger.BindsInstance
 import dagger.Component
@@ -15,7 +16,8 @@ import javax.inject.Singleton
         ViewModelMapperModule::class,
         ViewBuilderModule::class,
         LoadAlbumsModule::class,
-        AppDiModule::class
+        AppDiModule::class,
+        NetworkModule::class
     ]
 )
 interface ApplicationComponent {

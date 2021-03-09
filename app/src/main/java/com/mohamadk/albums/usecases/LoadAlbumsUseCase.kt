@@ -22,5 +22,3 @@ class LoadAlbumsUseCase @Inject constructor(private val loadAlbumsRepository: Lo
         return loadAlbumsRepository.albums()
     }
 }
-
-class AlbumsResponse(val items: List<ItemAlbumModel>)

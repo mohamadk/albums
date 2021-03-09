@@ -11,7 +11,7 @@ class LoadAlbumsRepositoryImpl @Inject constructor(
 ) : LoadAlbumsRepository {
 
     override suspend fun loadAlbums() {
-        albumsDao.insertAll(albumsRemoteDataStore.loadAlbums().items)
+        albumsDao.insertAll(albumsRemoteDataStore.loadAlbums())
     }
 
     override fun albums(): Flow<List<ItemAlbumModel>> {
