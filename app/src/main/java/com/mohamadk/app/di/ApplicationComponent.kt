@@ -1,7 +1,6 @@
 package com.mohamadk.app.di
 
 import com.mohamadk.albums.di.LoadAlbumsModule
-import com.mohamadk.albums.di.NetworkModule
 import com.mohamadk.app.App
 import dagger.BindsInstance
 import dagger.Component
@@ -38,14 +37,14 @@ object AlbumsApp {
     private lateinit var applicationComponent: ApplicationComponent
 
     @JvmStatic
-    internal fun init(app: App) {
+    fun init(app: App) {
         applicationComponent = DaggerApplicationComponent.builder()
             .albumsApp(app)
             .build()
         inject(app)
     }
 
-    internal fun inject(resource: Any) {
+    fun inject(resource: Any) {
         applicationComponent.androidInjector.inject(resource)
     }
 

@@ -12,7 +12,7 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.RegisterExtension
 
 
-internal class AlbumsFragmentViewModelTest {
+class AlbumsFragmentViewModelTest {
 
     @ExperimentalCoroutinesApi
     @RegisterExtension
@@ -25,10 +25,10 @@ internal class AlbumsFragmentViewModelTest {
     private val albumsModelWrappers =
         listOf(AlbumsModelWrapper(AlbumsListingItemTypes.SingleTitleItemType, itemAlbumUiModel))
 
-    private val loading = ViewState(showLoading = true, items = null, showError = false)
+    private val loading = ViewState(showLoading = true, items = null)
     private val success =
-        ViewState(showLoading = false, items = albumsModelWrappers, showError = false)
-    private val failure = ViewState(showLoading = false, items = null, showError = true)
+        ViewState(showLoading = false, items = albumsModelWrappers)
+    private val failure = ViewState(showLoading = false, items = null)
 
 
     @ExperimentalCoroutinesApi

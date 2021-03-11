@@ -1,6 +1,5 @@
-package com.mohamadk.albums.di
+package com.mohamadk.app.di
 
-import com.mohamadk.albums.usecases.repository.AlbumsRemoteDataStore
 import dagger.Module
 import dagger.Provides
 import okhttp3.OkHttpClient
@@ -36,10 +35,4 @@ class NetworkModule {
             .addConverterFactory(GsonConverterFactory.create())
             .build()
     }
-
-    @Provides
-    fun provideMovieLoaderRemoteDataStore(retrofit: Retrofit): AlbumsRemoteDataStore {
-        return retrofit.create(AlbumsRemoteDataStore::class.java)
-    }
-
 }

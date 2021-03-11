@@ -9,7 +9,7 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.RegisterExtension
 import kotlin.time.ExperimentalTime
 
-internal class LoadAlbumsRepositoryImplTest {
+class LoadAlbumsRepositoryImplTest {
 
     @ExperimentalCoroutinesApi
     @RegisterExtension

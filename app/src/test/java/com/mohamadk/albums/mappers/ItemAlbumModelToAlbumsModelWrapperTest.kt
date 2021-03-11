@@ -6,7 +6,7 @@ import com.mohamadk.albums.adapter.listing.ItemAlbumUiModel
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 
-internal class ItemAlbumModelToAlbumsModelWrapperTest {
+class ItemAlbumModelToAlbumsModelWrapperTest {
 
     private val itemAlbumModel = ItemAlbumUiModel(1, "title")
     private val albumsModelWrapper =

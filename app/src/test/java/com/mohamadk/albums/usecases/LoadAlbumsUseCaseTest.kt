@@ -15,7 +15,7 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.RegisterExtension
 
 
-internal class LoadAlbumsUseCaseTest {
+class LoadAlbumsUseCaseTest {
 
     @ExperimentalCoroutinesApi
     @RegisterExtension

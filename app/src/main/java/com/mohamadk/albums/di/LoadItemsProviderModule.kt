@@ -2,12 +2,14 @@ package com.mohamadk.albums.di
 
 import android.content.Context
 import androidx.room.Room
+import com.mohamadk.albums.usecases.repository.AlbumsRemoteDataStore
 import com.mohamadk.albums.usecases.repository.db.AlbumsDataBase
 import com.mohamadk.albums.usecases.repository.db.AlbumsLocalDataStore
 import dagger.Module
 import dagger.Provides
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
+import retrofit2.Retrofit
 
 @Module
 class LoadItemsProviderModule {
@@ -35,4 +37,8 @@ class LoadItemsProviderModule {
         return albumsDataBase.albumsDao()
     }
 
+    @Provides
+    fun provideMovieLoaderRemoteDataStore(retrofit: Retrofit): AlbumsRemoteDataStore {
+        return retrofit.create(AlbumsRemoteDataStore::class.java)
+    }
 }

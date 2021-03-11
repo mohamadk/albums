@@ -47,7 +47,7 @@ class AlbumsFragment : Fragment(R.layout.fragment_albums) {
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
     private val viewModel by lazy(LazyThreadSafetyMode.NONE) {
-        ViewModelProvider(this,viewModelFactory)[AlbumsFragmentViewModel::class.java]
+        ViewModelProvider(this, viewModelFactory)[AlbumsFragmentViewModel::class.java]
     }
 
     override fun onAttach(context: Context) {
@@ -60,12 +60,17 @@ class AlbumsFragment : Fragment(R.layout.fragment_albums) {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         _binding = FragmentAlbumsBinding.inflate(inflater, container, false)
 
         lifecycleScope.launchWhenStarted {
-            viewModel.viewStateFlow.collect{
+            viewModel.viewStateFlow.collect {
                 submitResult(it)
+            }
+        }
+        lifecycleScope.launchWhenStarted {
+            viewModel.errorStateFlow.collect {
+                _binding!!.errorView.errorViewMainLayout.isVisible = it != null
             }
         }
         _binding?.let {
@@ -82,7 +87,6 @@ class AlbumsFragment : Fragment(R.layout.fragment_albums) {
     private fun submitResult(viewState: ViewState) {
         with(binding) {
             loading.isVisible = viewState.showLoading
-            errorView.errorViewMainLayout.isVisible = viewState.showError
             viewState.items?.let { items ->
                 itemAdapter.set(items)
             }

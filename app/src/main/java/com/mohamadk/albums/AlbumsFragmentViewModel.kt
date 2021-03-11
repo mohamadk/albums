@@ -6,6 +6,7 @@ import com.mohamadk.albums.adapter.AlbumsModelWrapper
 import com.mohamadk.albums.mappers.ItemAlbumModelToAlbumsModelWrapper
 import com.mohamadk.albums.mappers.ItemAlbumModelToItemAlbumUiModel
 import com.mohamadk.albums.usecases.LoadAlbumsUseCase
+import com.mohamadk.albums.usecases.repository.NetworkError
 import com.mohamadk.albums.usecases.repository.db.ItemAlbumModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -21,17 +22,18 @@ class AlbumsFragmentViewModel @Inject constructor(
 ) : ViewModel() {
 
     private val _viewStateFlow = MutableSharedFlow<Unit>()
-
     @ExperimentalCoroutinesApi
     val viewStateFlow: SharedFlow<ViewState> = _viewStateFlow
         .flatMapLatest {
+            _errorStateFlow.emit(null)
             loadAlbumsUseCase.run(viewModelScope).map { items ->
-                ViewState(items = mapItems(items))
+                ViewState(items = mapItems(items),showLoading = items.isEmpty())
             }
-        }.catch {
-            emit(ViewState(showError = true))
         }
         .stateIn(viewModelScope, SharingStarted.Eagerly, ViewState(showLoading = true))
+
+    private val _errorStateFlow: MutableStateFlow<NetworkError?> = loadAlbumsUseCase.netWorkFailureStateFlow
+    val errorStateFlow: StateFlow<NetworkError?> = _errorStateFlow
 
     private fun mapItems(items: List<ItemAlbumModel>): List<AlbumsModelWrapper<*>> {
         return items.map { itemAlbumModel ->
@@ -56,6 +58,5 @@ class AlbumsFragmentViewModel @Inject constructor(
 
 data class ViewState(
     val showLoading: Boolean = false,
-    val items: List<AlbumsModelWrapper<*>>? = null,
-    val showError: Boolean = false
+    val items: List<AlbumsModelWrapper<*>>? = null
 )
