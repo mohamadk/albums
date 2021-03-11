@@ -2,8 +2,8 @@ package com.mohamadk.albums.di
 
 import android.content.Context
 import androidx.room.Room
-import com.mohamadk.albums.usecases.repository.db.AlbumsDao
 import com.mohamadk.albums.usecases.repository.db.AlbumsDataBase
+import com.mohamadk.albums.usecases.repository.db.AlbumsLocalDataStore
 import dagger.Module
 import dagger.Provides
 import kotlinx.coroutines.CoroutineDispatcher
@@ -31,7 +31,7 @@ class LoadItemsProviderModule {
     }
 
     @Provides
-    fun provideAlbumsDao(albumsDataBase: AlbumsDataBase): AlbumsDao {
+    fun provideAlbumsDao(albumsDataBase: AlbumsDataBase): AlbumsLocalDataStore {
         return albumsDataBase.albumsDao()
     }
 

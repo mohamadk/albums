@@ -6,7 +6,7 @@ import androidx.room.Query
 import kotlinx.coroutines.flow.Flow
 
 @Dao
-interface AlbumsDao {
+interface AlbumsLocalDataStore {
 
     @Query("select * from ItemAlbumModel")
     fun albums():Flow<List<ItemAlbumModel>>

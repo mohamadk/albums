@@ -2,6 +2,6 @@ package com.mohamadk.albums.utils
 
 interface UseCase<INPUT, OUTPUT> {
 
-    fun run(input: INPUT): OUTPUT
+    suspend fun run(input: INPUT): OUTPUT
 
 }

@@ -14,12 +14,10 @@ import org.junit.jupiter.api.extension.RegisterExtension
 
 internal class AlbumsFragmentViewModelTest {
 
-    companion object {
-        @ExperimentalCoroutinesApi
-        @RegisterExtension
-        @JvmField
-        val coroutineTestExtension = CoroutineTestExtension()
-    }
+    @ExperimentalCoroutinesApi
+    @RegisterExtension
+    @JvmField
+    val coroutineTestExtension = CoroutineTestExtension()
 
     private val itemAlbumModel = ItemAlbumModel(1, "title")
     private val itemAlbumModels = listOf(itemAlbumModel)
@@ -78,5 +76,4 @@ internal class AlbumsFragmentViewModelTest {
             .retry()
             .verifyViewStates(loading, failure)
     }
-
 }

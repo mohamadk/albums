@@ -6,5 +6,5 @@ import androidx.room.RoomDatabase
 @Database(entities = [ItemAlbumModel::class], version = 1)
 abstract class AlbumsDataBase : RoomDatabase() {
 
-    abstract fun albumsDao(): AlbumsDao
+    abstract fun albumsDao(): AlbumsLocalDataStore
 }

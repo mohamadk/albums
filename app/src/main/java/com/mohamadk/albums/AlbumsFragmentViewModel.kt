@@ -8,6 +8,7 @@ import com.mohamadk.albums.mappers.ItemAlbumModelToItemAlbumUiModel
 import com.mohamadk.albums.usecases.LoadAlbumsUseCase
 import com.mohamadk.albums.usecases.repository.db.ItemAlbumModel
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -20,6 +21,8 @@ class AlbumsFragmentViewModel @Inject constructor(
 ) : ViewModel() {
 
     private val _viewStateFlow = MutableSharedFlow<Unit>()
+
+    @ExperimentalCoroutinesApi
     val viewStateFlow: SharedFlow<ViewState> = _viewStateFlow
         .flatMapLatest {
             loadAlbumsUseCase.run(viewModelScope).map { items ->

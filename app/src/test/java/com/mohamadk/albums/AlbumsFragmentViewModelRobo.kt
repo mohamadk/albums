@@ -6,7 +6,7 @@ import com.mohamadk.albums.usecases.LoadAlbumsUseCase
 import com.mohamadk.albums.usecases.repository.db.ItemAlbumModel
 import com.nhaarman.mockitokotlin2.any
 import com.nhaarman.mockitokotlin2.mock
-import com.nhaarman.mockitokotlin2.whenever
+import com.nhaarman.mockitokotlin2.stub
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -16,6 +16,7 @@ import kotlinx.coroutines.test.TestCoroutineDispatcher
 import kotlinx.coroutines.test.TestCoroutineScope
 import org.junit.jupiter.api.Assertions.assertEquals
 
+@ExperimentalCoroutinesApi
 class AlbumsFragmentViewModelRobo @ExperimentalCoroutinesApi constructor(
     testCoroutineScope: TestCoroutineScope,
     testCoroutineDispatcher: TestCoroutineDispatcher,
@@ -55,18 +56,21 @@ class AlbumsFragmentViewModelRobo @ExperimentalCoroutinesApi constructor(
 
 
     private fun mockLoadAlbumsUseCase(albumsResponseFlow: Array<out MutableStateFlow<List<ItemAlbumModel>>>) {
-        when {
-            albumsResponseFlow.isEmpty() -> {
-                whenever(loadAlbumsUseCase.run(any())).thenThrow(error)
-            }
-            albumsResponseFlow.size == 1 -> {
-                whenever(loadAlbumsUseCase.run(any())).thenReturn(albumsResponseFlow[0])
-            }
-            albumsResponseFlow.size > 1 -> {
-                whenever(loadAlbumsUseCase.run(any())).thenReturn(
-                    albumsResponseFlow[0],
-                    *albumsResponseFlow.sliceArray(1 until albumsResponseFlow.size)
-                )
+        loadAlbumsUseCase.stub {
+            val stubbing = onBlocking { run(any()) }
+            when {
+                albumsResponseFlow.isEmpty() -> {
+                    stubbing.thenThrow(error)
+                }
+                albumsResponseFlow.size == 1 -> {
+                    stubbing.thenReturn(albumsResponseFlow[0])
+                }
+                albumsResponseFlow.size > 1 -> {
+                    stubbing.thenReturn(
+                        albumsResponseFlow[0],
+                        *albumsResponseFlow.sliceArray(1 until albumsResponseFlow.size)
+                    )
+                }
             }
         }
     }

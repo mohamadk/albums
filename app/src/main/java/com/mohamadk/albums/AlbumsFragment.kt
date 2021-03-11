@@ -22,6 +22,7 @@ import com.mohamadk.albums.adapter.AlbumsModelWrapper
 import com.mohamadk.albums.databinding.FragmentAlbumsBinding
 import com.mohamadk.app.ViewModelFactory
 import com.mohamadk.app.di.AlbumsApp
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.collect
 import javax.inject.Inject
 
@@ -54,6 +55,7 @@ class AlbumsFragment : Fragment(R.layout.fragment_albums) {
         AlbumsApp.inject(this)
     }
 
+    @ExperimentalCoroutinesApi
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -80,7 +82,7 @@ class AlbumsFragment : Fragment(R.layout.fragment_albums) {
     private fun submitResult(viewState: ViewState) {
         with(binding) {
             loading.isVisible = viewState.showLoading
-            (errorView as View).isVisible = viewState.showError
+            errorView.errorViewMainLayout.isVisible = viewState.showError
             viewState.items?.let { items ->
                 itemAdapter.set(items)
             }
