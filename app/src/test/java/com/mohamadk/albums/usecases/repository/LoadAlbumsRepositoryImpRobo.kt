@@ -61,9 +61,9 @@ class LoadAlbumsRepositoryImpRobo(
 
     fun verifyInsertItemsToLocalDataStore(vararg itemAlbumModels: List<ItemAlbumModel>): LoadAlbumsRepositoryImpRobo {
         val argumentCaptor = argumentCaptor<List<ItemAlbumModel>>()
-        verifyBlocking(albumsLocalDataStore) {
-            times(itemAlbumModels.size)
-            if (itemAlbumModels.isNotEmpty()) {
+        if (itemAlbumModels.isNotEmpty()) {
+            verifyBlocking(albumsLocalDataStore) {
+                times(itemAlbumModels.size)
                 insertAll(argumentCaptor.capture())
             }
         }
