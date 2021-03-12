@@ -26,15 +26,17 @@ class LoadAlbumsRepositoryImplTest {
     fun `run success`() = coroutineTestExtension.testDispatcher.runBlockingTest {
         val localAvailableAlbumsCount = 0
         LoadAlbumsRepositoryImpRobo(
+            this,
             coroutineTestExtension.testDispatcher,
             itemAlbumModelsFlow,
             localAvailableAlbumsCount,
             error,
             itemAlbumModels
         )
-            .albums(this)
+            .albums()
             .verifyLoadFromRemoteDataStore()
             .verifyInsertItemsToLocalDataStore(itemAlbumModels)
+            .verifyNetworkError(null)
     }
 
     @ExperimentalTime
@@ -45,18 +47,17 @@ class LoadAlbumsRepositoryImplTest {
             val localAvailableAlbumsCount = 0
 
             LoadAlbumsRepositoryImpRobo(
+                this,
                 coroutineTestExtension.testDispatcher,
                 itemAlbumModelsLocalFlow = itemAlbumModelsFlow,
                 albumsCount = localAvailableAlbumsCount,
                 error = error
             )
-                .albums(this)
+                .albums()
                 .verifyLoadFromRemoteDataStore()
                 .verifyInsertItemsToLocalDataStore()
-            // https://github.com/Kotlin/kotlinx.coroutines/issues/1204
-//            .verifyNetworkError(NetworkError(error))
+                .verifyNetworkError(null, NetworkError(error))
         }
-
 
 
     @ExperimentalTime
@@ -67,15 +68,15 @@ class LoadAlbumsRepositoryImplTest {
             val localAvailableAlbumsCount = 5
 
             LoadAlbumsRepositoryImpRobo(
+                this,
                 coroutineTestExtension.testDispatcher,
                 itemAlbumModelsLocalFlow = itemAlbumModelsFlow,
                 albumsCount = localAvailableAlbumsCount,
                 error = error
             )
-                .albums(this)
+                .albums()
                 .verifyLoadFromRemoteDataStore()
                 .verifyInsertItemsToLocalDataStore()
-            // https://github.com/Kotlin/kotlinx.coroutines/issues/1204
-//            .verifyNetworkError(NetworkError(error))
+                .verifyNetworkError(null)
         }
 }

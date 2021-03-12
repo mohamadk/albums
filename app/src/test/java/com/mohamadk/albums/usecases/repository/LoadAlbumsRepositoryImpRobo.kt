@@ -5,10 +5,14 @@ import com.mohamadk.albums.usecases.repository.db.ItemAlbumModel
 import com.nhaarman.mockitokotlin2.*
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
 import org.junit.jupiter.api.Assertions.assertEquals
 
 class LoadAlbumsRepositoryImpRobo(
+    val coroutineScope: CoroutineScope,
     coroutineDispatcher: CoroutineDispatcher,
     itemAlbumModelsLocalFlow: MutableStateFlow<List<ItemAlbumModel>>,
     albumsCount: Int = 0,
@@ -19,6 +23,8 @@ class LoadAlbumsRepositoryImpRobo(
     private val albumsLocalDataStore: AlbumsLocalDataStore = mock()
     private val albumsRemoteDataStore: AlbumsRemoteDataStore = mock()
     private val repositoryImpl: LoadAlbumsRepositoryImpl
+    private val networkErrors = mutableListOf<NetworkError?>()
+    private val networkFailuresJob: Job
 
     init {
         whenever(albumsLocalDataStore.albums()).thenReturn(itemAlbumModelsLocalFlow)
@@ -38,13 +44,19 @@ class LoadAlbumsRepositoryImpRobo(
             }
         }
         repositoryImpl = LoadAlbumsRepositoryImpl(
-                coroutineDispatcher,
-                albumsLocalDataStore,
-                albumsRemoteDataStore
-            )
+            coroutineDispatcher,
+            albumsLocalDataStore,
+            albumsRemoteDataStore
+        )
+
+        networkFailuresJob = coroutineScope.launch {
+            repositoryImpl.netWorkFailureStateFlow.collect {
+                networkErrors.add(it)
+            }
+        }
     }
 
-    fun albums(coroutineScope: CoroutineScope): LoadAlbumsRepositoryImpRobo {
+    fun albums(): LoadAlbumsRepositoryImpRobo {
         repositoryImpl.albums(coroutineScope)
 
         return this
@@ -72,11 +84,10 @@ class LoadAlbumsRepositoryImpRobo(
         return this
     }
 
-//    suspend fun verifyNetworkError(networkError: NetworkError?): LoadAlbumsRepositoryImpRobo {
-//        val networkErrorResult = loadAlbumsRepositoryImpl.netWorkFailureStateFlow.firstOrNull()
-//        assertEquals(networkError,networkErrorResult)
-//
-//        return this
-//    }
+    fun verifyNetworkError(vararg networkError: NetworkError?): LoadAlbumsRepositoryImpRobo {
+        assertEquals(networkError.toList(), networkErrors)
+        networkFailuresJob.cancel()
+        return this
+    }
 
 }
