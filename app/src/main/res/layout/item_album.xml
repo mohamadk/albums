@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/itemAlbumCardView"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="@dimen/d1"
     app:cardBackgroundColor="@color/white"
     app:cardUseCompatPadding="true">
 
@@ -12,6 +13,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:textAppearance="@style/TextAppearance.AppCompat.Title" />
+        android:layout_margin="@dimen/d2"
+        android:ellipsize="end"
+        android:maxLines="2"
+        android:textAppearance="@style/TextAppearance.AppCompat.Title"
+        tools:text="title" />
 
 </androidx.cardview.widget.CardView>
