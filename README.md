@@ -12,6 +12,8 @@ Dagger2,
 FastAdapter,  
 Junit5
 
-![Chart](docs/chart.png "Material Design Demo")
+![Chart](docs/chart.png "Flow chart of the app")
+
+![Chart](docs/umlChart.png "uml Chart of the app")
 
 
