@@ -11,4 +11,4 @@ interface LoadAlbumsRepository {
     fun albums(coroutineScope: CoroutineScope): Flow<List<ItemAlbumModel>>
 }
 
-class NetworkError(val e:Throwable?=null)
+data class NetworkError(val e:Throwable?=null)

@@ -3,10 +3,12 @@ package com.mohamadk.albums
 import com.mohamadk.albums.mappers.ItemAlbumModelToAlbumsModelWrapper
 import com.mohamadk.albums.mappers.ItemAlbumModelToItemAlbumUiModel
 import com.mohamadk.albums.usecases.LoadAlbumsUseCase
+import com.mohamadk.albums.usecases.repository.NetworkError
 import com.mohamadk.albums.usecases.repository.db.ItemAlbumModel
 import com.nhaarman.mockitokotlin2.any
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.stub
+import com.nhaarman.mockitokotlin2.whenever
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -20,12 +22,13 @@ import org.junit.jupiter.api.Assertions.assertEquals
 class AlbumsFragmentViewModelRobo @ExperimentalCoroutinesApi constructor(
     testCoroutineScope: TestCoroutineScope,
     testCoroutineDispatcher: TestCoroutineDispatcher,
+    val error: Exception? = null,
     vararg albumsResponseFlow: MutableStateFlow<List<ItemAlbumModel>>
 ) {
 
     private val viewModel: AlbumsFragmentViewModel
     private val loadAlbumsUseCase: LoadAlbumsUseCase = mock()
-    private val error = IllegalStateException("something went wrong :O")
+    private val errorStateFlow = MutableStateFlow<NetworkError?>(null)
 
     /**
      * didn't mock mappers since mock will do the same job as implementation itself
@@ -35,7 +38,9 @@ class AlbumsFragmentViewModelRobo @ExperimentalCoroutinesApi constructor(
     private val itemAlbumModelToItemAlbumUiModel =
         ItemAlbumModelToItemAlbumUiModel()
     private val viewStates = mutableListOf<ViewState>()
+    private val errorStates = mutableListOf<NetworkError?>()
     private val viewStateJob: Job
+    private val errorStateJob: Job
 
     init {
         mockLoadAlbumsUseCase(albumsResponseFlow)
@@ -52,10 +57,16 @@ class AlbumsFragmentViewModelRobo @ExperimentalCoroutinesApi constructor(
                 viewStates.add(it)
             }
         }
+
+        errorStateJob = testCoroutineScope.launch {
+            viewModel.errorStateFlow.collect {
+                errorStates.add(it)
+            }
+        }
     }
 
-
     private fun mockLoadAlbumsUseCase(albumsResponseFlow: Array<out MutableStateFlow<List<ItemAlbumModel>>>) {
+        whenever(loadAlbumsUseCase.netWorkFailureStateFlow).thenReturn(errorStateFlow)
         loadAlbumsUseCase.stub {
             val stubbing = onBlocking { run(any()) }
             when {
@@ -90,6 +101,13 @@ class AlbumsFragmentViewModelRobo @ExperimentalCoroutinesApi constructor(
 
     fun retry(): AlbumsFragmentViewModelRobo {
         viewModel.retry()
+
+        return this
+    }
+
+    fun verifyError(vararg networkError: NetworkError?): AlbumsFragmentViewModelRobo {
+        assertEquals(networkError.toList(), errorStates)
+        errorStateJob.cancel()
 
         return this
     }

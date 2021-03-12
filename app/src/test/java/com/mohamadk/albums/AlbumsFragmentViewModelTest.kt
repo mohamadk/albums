@@ -3,6 +3,7 @@ package com.mohamadk.albums
 import com.mohamadk.albums.adapter.AlbumsListingItemTypes
 import com.mohamadk.albums.adapter.AlbumsModelWrapper
 import com.mohamadk.albums.adapter.listing.ItemAlbumUiModel
+import com.mohamadk.albums.usecases.repository.NetworkError
 import com.mohamadk.albums.usecases.repository.db.ItemAlbumModel
 import com.mohamadk.albums.utils.CoroutineTestExtension
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -26,10 +27,8 @@ class AlbumsFragmentViewModelTest {
         listOf(AlbumsModelWrapper(AlbumsListingItemTypes.SingleTitleItemType, itemAlbumUiModel))
 
     private val loading = ViewState(showLoading = true, items = null)
-    private val success =
-        ViewState(showLoading = false, items = albumsModelWrappers)
-    private val failure = ViewState(showLoading = false, items = null)
-
+    private val success = ViewState(showLoading = false, items = albumsModelWrappers)
+    private val error = IllegalStateException("something went wrong :O")
 
     @ExperimentalCoroutinesApi
     @Test
@@ -37,10 +36,12 @@ class AlbumsFragmentViewModelTest {
         AlbumsFragmentViewModelRobo(
             this,
             coroutineTestExtension.testDispatcher,
+            null,
             MutableStateFlow(itemAlbumModels)
         )
             .viewCreated()
             .verifyViewStates(loading, success)
+            .verifyError(null)
     }
 
     @ExperimentalCoroutinesApi
@@ -48,10 +49,12 @@ class AlbumsFragmentViewModelTest {
     fun `load Albums failure`() = coroutineTestExtension.testDispatcher.runBlockingTest {
         AlbumsFragmentViewModelRobo(
             this,
-            coroutineTestExtension.testDispatcher
+            coroutineTestExtension.testDispatcher,
+            error = error
         )
             .viewCreated()
-            .verifyViewStates(loading, failure)
+            .verifyViewStates(loading)
+            .verifyError(null, NetworkError())
     }
 
     @ExperimentalCoroutinesApi
@@ -60,10 +63,12 @@ class AlbumsFragmentViewModelTest {
         AlbumsFragmentViewModelRobo(
             this,
             coroutineTestExtension.testDispatcher,
+            null,
             MutableStateFlow(itemAlbumModels)
         )
             .retry()
             .verifyViewStates(loading, success)
+            .verifyError(null)
     }
 
     @ExperimentalCoroutinesApi
@@ -71,9 +76,11 @@ class AlbumsFragmentViewModelTest {
     fun `retry load Albums failure`() = coroutineTestExtension.testDispatcher.runBlockingTest {
         AlbumsFragmentViewModelRobo(
             this,
-            coroutineTestExtension.testDispatcher
+            coroutineTestExtension.testDispatcher,
+            error
         )
             .retry()
-            .verifyViewStates(loading, failure)
+            .verifyViewStates(loading)
+            .verifyError(null, NetworkError())
     }
 }

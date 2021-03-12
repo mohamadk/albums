@@ -22,17 +22,23 @@ class AlbumsFragmentViewModel @Inject constructor(
 ) : ViewModel() {
 
     private val _viewStateFlow = MutableSharedFlow<Unit>()
+
     @ExperimentalCoroutinesApi
     val viewStateFlow: SharedFlow<ViewState> = _viewStateFlow
         .flatMapLatest {
             _errorStateFlow.emit(null)
+
             loadAlbumsUseCase.run(viewModelScope).map { items ->
-                ViewState(items = mapItems(items),showLoading = items.isEmpty())
+                ViewState(items = mapItems(items), showLoading = items.isEmpty())
             }
+        }.catch {
+            //this shouldn't happen
+            _errorStateFlow.emit(NetworkError())
         }
         .stateIn(viewModelScope, SharingStarted.Eagerly, ViewState(showLoading = true))
 
-    private val _errorStateFlow: MutableStateFlow<NetworkError?> = loadAlbumsUseCase.netWorkFailureStateFlow
+    private val _errorStateFlow: MutableStateFlow<NetworkError?> =
+        loadAlbumsUseCase.netWorkFailureStateFlow
     val errorStateFlow: StateFlow<NetworkError?> = _errorStateFlow
 
     private fun mapItems(items: List<ItemAlbumModel>): List<AlbumsModelWrapper<*>> {
