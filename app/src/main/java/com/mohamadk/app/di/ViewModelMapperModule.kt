@@ -15,5 +15,4 @@ abstract class ViewModelMapperModule {
     @Binds
     @ViewModelKey(AlbumsFragmentViewModel::class)
     abstract fun bindAlbumsFragmentViewModel(viewModel: AlbumsFragmentViewModel): ViewModel
-
 }

@@ -19,7 +19,7 @@ class LoadAlbumsRepositoryImplTest {
     private val itemAlbumModel = ItemAlbumModel(1, "title")
     private val itemAlbumModels = listOf(itemAlbumModel)
     private val itemAlbumModelsFlow = MutableStateFlow(itemAlbumModels)
-    val error = IllegalStateException("something went wrong :O")
+    private val error = IllegalStateException("something went wrong :O")
 
     @ExperimentalCoroutinesApi
     @Test

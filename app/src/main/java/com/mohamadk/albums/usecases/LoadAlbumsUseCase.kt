@@ -15,7 +15,7 @@ class LoadAlbumsUseCase @Inject constructor(
 
     val netWorkFailureStateFlow: MutableStateFlow<NetworkError?> = loadAlbumsRepository.netWorkFailureStateFlow
 
-    override suspend fun run(coroutineScope: CoroutineScope): Flow<List<ItemAlbumModel>> {
+    override fun run(coroutineScope: CoroutineScope): Flow<List<ItemAlbumModel>> {
         return loadAlbumsRepository.albums(coroutineScope)
     }
 }
