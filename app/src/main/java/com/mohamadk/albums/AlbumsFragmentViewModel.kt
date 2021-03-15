@@ -29,6 +29,8 @@ class AlbumsFragmentViewModel @Inject constructor(
             _errorStateFlow.emit(null)
 
             loadAlbumsUseCase.run(viewModelScope).map { items ->
+                //showLoading = items.isEmpty() with assumption that we always have albums available,
+                // so items.isEmpty() means when we don't have items in local db
                 ViewState(items = mapItems(items), showLoading = items.isEmpty())
             }
         }.catch {
@@ -50,13 +52,13 @@ class AlbumsFragmentViewModel @Inject constructor(
     }
 
     fun viewCreated() {
-        viewModelScope.launch(ioDispatcher) {
+        viewModelScope.launch {
             _viewStateFlow.emit(Unit)
         }
     }
 
     fun retry() {
-        viewModelScope.launch(ioDispatcher) {
+        viewModelScope.launch {
             _viewStateFlow.emit(Unit)
         }
     }
